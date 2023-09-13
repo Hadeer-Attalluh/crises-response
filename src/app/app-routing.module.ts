@@ -4,23 +4,34 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { SafetyCheckComponent } from './safety-check/safety-check.component';
+import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 
 const routes: Routes = [
   {
+    path: 'verifyByMobile',
+    component: VerifyByMobileComponent,
+    // canActivate: [AuthGuard]
+  },
+  {
     path: 'login',
-    component: UserProfileComponent,
-    canActivate: [AuthGuard]
+    component: LoginComponent,
+    // canActivate: [AuthGuard]
   },
   {
     path: 'safety-check',
     component: SafetyCheckComponent,
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard]
   },
   {
     path: 'user-profile',
-    component: LoginComponent,
-    canActivate: [AuthGuard]
+    component: UserProfileComponent,
+    // canActivate: [AuthGuard]
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'user-profile'
+  }
 ];
 
 @NgModule({

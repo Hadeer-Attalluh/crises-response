@@ -8,13 +8,15 @@ import { SafetyCheckComponent } from './safety-check/safety-check.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SafetyCheckComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    VerifyByMobileComponent
   ],
   imports: [
     BrowserModule,

@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.loginForm.valid) {
       this.processingRequest = true;
-      this.FBAuth.authinticateUser();
       this.authService.login(this.loginForm.value).subscribe(
         () => {
           this.processingRequest = false;

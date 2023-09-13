@@ -30,22 +30,29 @@ export class FirebaseService {
     this.fireStore = getFirestore(this.firebaseApp);
   }
 
-  authinticateUser() {
-    const phoneNumber = "+201272747752";
+  async authinticateUser (phoneNumber: string) {
+    // const phoneNumber = "+201272747752";
     if (!this.appVerifier) this.recaptcha();
-    signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier)
-      .then((confirmationResult: any) => {
-        this.confirmationResult = confirmationResult;
-        console.log(confirmationResult);
-        return confirmationResult;
-        // SMS sent. Prompt user to type the code from the message, then sign the
-        // user in with confirmationResult.confirm(code).
-        // window.confirmationResult = confirmationResult;
-        // ...
-      }).catch((error) => {
-        // Error; SMS not sent
-        // ...
-      });
+try {
+ return await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier)
+  
+} catch (error) {
+  throw (error);
+}
+  //  await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier)
+  //     .then((confirmationResult: any) => {
+  //       this.confirmationResult = confirmationResult;
+  //       console.log(confirmationResult);
+  //       return confirmationResult;
+  //       // SMS sent. Prompt user to type the code from the message, then sign the
+  //       // user in with confirmationResult.confirm(code).
+  //       // window.confirmationResult = confirmationResult;
+  //       // ...
+  //     }).catch((error) => {
+  //       throw (error);
+  //       // Error; SMS not sent
+  //       // ...
+  //     });
   }
 
   recaptcha() {
