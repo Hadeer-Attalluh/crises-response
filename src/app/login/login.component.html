@@ -10,7 +10,7 @@
                 <!-- if input has error add class (has-error) to form-group-->
                 <div class="form-group mb-4">
                     <label class="form-label">{{
-                        'LOGIN.USERNAME'
+                        'usernamer'
                         }}</label>
                     <input class="form-control" id="username" type="text" formControlName="username"
                         [placeholder]="'LOGIN.USERNAME' " />
@@ -40,18 +40,12 @@
 
                 <div class="text-center mt-3">
                     <button [disabled]="
-                            loginForm.invalid || processingRequest
+                            loginForm.invalid
                         " type="submit" color="primary" expand="block" class="btn btn-success btn-lg btn-block">
-                        {{ 'LOGIN.LOGIN_TITLE' }}
+                        {{ 'login' }}
                     </button>
                 </div>
             </form>
-            <div class="have-problem">
-                <span>{{ 'LOGIN.LOGIN_PROBLEM' }}</span>
-                <a href="">{{
-                    'LOGIN.LOGIN_HELPDESK'
-                    }}</a>
-            </div>
         </div>
     </div>
 </section>

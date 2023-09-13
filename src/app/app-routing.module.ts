@@ -8,19 +8,24 @@ import { SafetyCheckComponent } from './safety-check/safety-check.component';
 const routes: Routes = [
   {
     path: 'login',
-    component: UserProfileComponent,
-    canActivate: [AuthGuard]
+    component: LoginComponent,
+    // canActivate: [AuthGuard]
   },
   {
     path: 'safety-check',
     component: SafetyCheckComponent,
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard]
   },
   {
     path: 'user-profile',
-    component: LoginComponent,
-    canActivate: [AuthGuard]
+    component: UserProfileComponent,
+    // canActivate: [AuthGuard]
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'user-profile'
+  }
 ];
 
 @NgModule({
