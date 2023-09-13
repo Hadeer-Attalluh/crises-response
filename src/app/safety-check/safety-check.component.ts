@@ -9,6 +9,7 @@ import { CrisesResponseService } from '../_services/crises-response.service';
   styleUrls: ['./safety-check.component.css']
 })
 export class SafetyCheckComponent implements OnInit {
+  
   data: any[];
   constructor(private firebase: FirebaseService,private crisesReponseService:CrisesResponseService) { }
 
