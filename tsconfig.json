@@ -2,6 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "noImplicitAny":false,
     "strictFunctionTypes": false,
     "strictPropertyInitialization": false,
     "baseUrl": "./",
@@ -9,8 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,

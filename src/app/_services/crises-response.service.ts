@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { FirebaseService } from './firebase.service';
+import { Observable, filter, map } from 'rxjs';
+import { Crisis } from '../_models/crisis.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrisesResponseService {
 
-  constructor() { }
+  constructor(private firbaseService: FirebaseService) { }
 
   getUserLocation() {
     if (navigator.geolocation) {
@@ -44,5 +47,18 @@ export class CrisesResponseService {
     }
 
     );
+  }
+
+
+  getLatestCrisesCheckListEmployees(): Observable<Crisis> {
+    return this.firbaseService.getCrises()
+      .pipe(map(crises => {
+        const criseskeys = Object.keys(crises);
+        return {
+          id: criseskeys[criseskeys.length - 1],
+          employeeCheckList: crises[criseskeys[criseskeys.length - 1]].users
+        }
+      }
+      ))
   }
 }

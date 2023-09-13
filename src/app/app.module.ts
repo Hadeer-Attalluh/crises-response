@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { SafetyCheckComponent } from './safety-check/safety-check.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { CommonModule } from '@angular/common';
+        import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -21,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     CommonModule,
     ReactiveFormsModule,
+    HttpClientModule,
 
   ],
   providers: [],

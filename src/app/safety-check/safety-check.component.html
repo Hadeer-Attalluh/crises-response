@@ -1,1 +1,21 @@
-<p>safety-check works!</p>
+<input type="file" (change)="onFileUpload($event)" [multiple]="false" [accept]="'.xlsx'">
+<button (click)="requestPushNotification()">requestPushNotification</button>
+
+<table>
+    <tr>
+        <th>
+            marked as save
+        </th>
+        <th>
+            need help
+        </th>
+        <th>
+            no response
+        </th>
+    </tr>
+    <tr *ngFor="let entry of data">
+        <td>{{entry?.name}}</td>
+        <td>{{entry?.name}}</td>
+        <td>{{entry?.name}}</td>
+    </tr>
+</table>
