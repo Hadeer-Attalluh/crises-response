@@ -53,7 +53,7 @@ export class FirebaseService {
     });
   }
 
-  async verifyOtp(otp: string, password?: string) {
+  async verifyOtp(otp: string) {
     return new Promise(async (resolve, reject) => {
       try {
         if (!this.appVerifier) {
