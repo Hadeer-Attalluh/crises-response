@@ -9,9 +9,12 @@ import { CrisesResponseService } from '../_services/crises-response.service';
   styleUrls: ['./safety-check.component.css']
 })
 export class SafetyCheckComponent implements OnInit {
-  data: any[];
+  data: any[] = [];
   tableData: any[];
-  constructor(private firebase: FirebaseService, private crisesReponseService: CrisesResponseService) { }
+  activeTab;
+  constructor(private firebase: FirebaseService, private crisesReponseService: CrisesResponseService) { 
+    this.activeTab = 'help';
+  }
 
   get needHelpEmployees(): Employee[] {
     return this.data?.filter(employee => employee.is_safe === false) || [];
@@ -38,6 +41,7 @@ export class SafetyCheckComponent implements OnInit {
   }
 
   onChangeTab(activeTab) {
+    this.activeTab = activeTab;
     switch (activeTab) {
       case 'help':
         this.tableData = this.needHelpEmployees;
@@ -77,7 +81,7 @@ export class SafetyCheckComponent implements OnInit {
     console.log(this.data);
     this.firebase.addCrisesCheck(this.data)
       .subscribe(crisisId => {
-        this.sendSmsToEmployees();
+        this.onChangeTab(this.activeTab);
       }
       );
   }

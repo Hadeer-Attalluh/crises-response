@@ -10,6 +10,7 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
   providedIn: 'root'
 })
 export class FirebaseService {
+
   readonly dbLink = 'https://crises-response-b46d0-default-rtdb.europe-west1.firebasedatabase.app/';
 
   readonly FCMKeyPair = 'BMdPrqiZz9W2WJ5faeLGEtBqDkGT6RjOooOZdMU_u5DKB9DR5k1FBeIgJ4nOvXsCGB4Ol9zfb0N6At5V3mvjlZ4';
@@ -47,7 +48,9 @@ export class FirebaseService {
   authinticateUser() {
 
   }
-
+  saveLocation(crisisId,userId: any, longitude: number, latitude: number) {
+    this.http.patch(this.dbLink+`crises/${crisisId}/users/${userId}/location.json`,{long:longitude,lat:latitude}).subscribe();
+  }
   // TODO: a usage ?
   requestNotificationPermission() {
     const messaging = getMessaging();
@@ -112,5 +115,12 @@ export class FirebaseService {
           headers: headers
         })
       })).subscribe();
+  }
+
+  saveEmployeeCrisisResponse(user: any) {
+   return this.http.patch(this.dbLink+`crises/${user.crisisId}/users/${user.db_idx}.json`,{
+    is_safe:user.is_safe,
+    support_requests:user.support_requests
+   });
   }
 }
