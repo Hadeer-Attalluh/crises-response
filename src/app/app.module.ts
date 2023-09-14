@@ -11,7 +11,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 
-import { OtpComponent } from './otp/otp.component';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -22,7 +21,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SafetyCheckComponent,
     UserProfileComponent,
     VerifyByMobileComponent,
-    OtpComponent,
     AppLayoutComponent,
   ],
   imports: [

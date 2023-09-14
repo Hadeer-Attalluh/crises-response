@@ -51,35 +51,62 @@
     <div id="sign-in-button" ></div>
 
 </section> -->
- 
-<section class="section">
-  <div class="container">
-     <div class="row justify-content-center">
-      <div class="col-lg-8 text-center">
-          <img src="../assets/images/logo.svg" alt=" " width="120" class="mb-5">  
 
-    </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="p-5 shadow rounded content">
-          <h2 class="section-title">Login</h2>
-          <form  action="/safety-check">
-            
-            <div class="form-group mb-3">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" id="email" name="email" placeholder="Your Email Address"
-                required>
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <img src="../assets/images/logo.svg" alt=" " width="120" class="mb-5">
+
             </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Your Email Address"
-                required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Login</button>
-          </form>
         </div>
-      </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="p-5 shadow rounded content">
+                    <h2 class="section-title">Login</h2>
+                    <form [formGroup]="loginForm">
+                        <div class="form-group mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Your Email Address" required formControlName="email">
+                                <div
+                                class="error-message"
+                                *ngIf="
+                                    loginForm.controls.email.dirty ||
+                                    loginForm.controls.email.touched
+                                ">
+                                <div *ngIf="loginForm.controls.email.errors?.pattern">
+                                    please enter valid email
+                                </div>
+                                <div *ngIf="loginForm.controls.email.errors?.required">
+                                    email is required
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Your Email Address" required formControlName="password">
+                                <div
+                                class="error-message"
+                                *ngIf="
+                                    loginForm.controls.password.dirty ||
+                                    loginForm.controls.password.touched
+                                "
+                            >
+                            <div *ngIf="loginForm.controls.password.errors?.required">
+                                password is required
+                            </div>
+                            <div *ngIf="loginForm.controls.password.errors?.passwordcharacters&&loginForm.controls.password.errors?.minlength">
+                                A password must contains at least eight characters, including at least one number and includes both lower and uppercase letters and special characters, for example #, ?, !.                            </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <button type="submit" class="btn btn-primary mt-3" (click)="login()">Login</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </section>

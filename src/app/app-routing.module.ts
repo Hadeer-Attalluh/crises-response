@@ -6,7 +6,6 @@ import { LoginComponent } from './login/login.component';
 import { SafetyCheckComponent } from './safety-check/safety-check.component';
 import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
-import { OtpComponent } from './otp/otp.component';
 
 const routes: Routes = [
   {
@@ -17,11 +16,6 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // canActivate: [AuthGuard]
-  },
-  {
-    path: 'otp',
-    component: OtpComponent,
     // canActivate: [AuthGuard]
   },
   // basic routes

@@ -83,6 +83,14 @@ export class FirebaseService {
     };
   }
 
+  //sign in 
+  signInWithEmail(){
+   return this.http.get(this.dbLink + 'admins.json').pipe(
+      map(data => {
+        return data;
+      })
+    );
+  }
 
 
   // TODO: a usage ?
@@ -115,7 +123,7 @@ export class FirebaseService {
   getCrises() {
     return this.http.get(this.dbLink + 'crises.json').pipe(
       map(data => {
-        console.log(data);
+        // console.log(data);
         return data;
       })
     );
