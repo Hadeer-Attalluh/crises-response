@@ -50,15 +50,15 @@ export class CrisesResponseService {
   }
 
 
-  getLatestCrisesCheckListEmployees(): Observable<Crisis> {
-    return this.firbaseService.getCrises()
-      .pipe(map(crises => {
-        const criseskeys = Object.keys(crises);
-        return {
-          id: criseskeys[criseskeys.length - 1],
-          employeeCheckList: crises[criseskeys[criseskeys.length - 1]].users
+  getLatestCrisis(crisisId?: any): Observable<Crisis> {
+      return this.firbaseService.getCrises()
+        .pipe(map(crises => {
+          const criseskeys = Object.keys(crises);
+          return {
+            id: criseskeys[criseskeys.length - 1],
+            employeeCheckList: crises[criseskeys[criseskeys.length - 1]].users
+          }
         }
-      }
-      ))
+        )); ''
   }
 }
