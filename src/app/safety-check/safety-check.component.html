@@ -5,11 +5,9 @@
     <div class="container">
         <div class="row justify-content-between align-items-center">
             <div class="col-lg-7 text-center text-lg-left">
-                <h1 class="mb-4">Eiusmod nisi</h1>
+                <h1 class="mb-4">Check Up on people</h1>
                 <p class="mb-4">
-                    Lorem ipsum dolor amet, consetetur sadiffspscing elitr, diam nonumy
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua
-                    At.
+                    Upload sheet with employees data so we can check on them.
                 </p>
                 <div class="card match-height">
                     <div class="card-body">
@@ -31,7 +29,7 @@
 <section class="section pb-0">
     <div class="container">
         <div class="d-flex justify-content-between mb-3">
-            <h2 class="section-title mb-0">Browse Employees</h2>
+            <h2 class="section-title mb-0">Employees check list</h2>
             <button type="submit" class="btn btn-primary" (click)="sendSmsToEmployees()">Send Sms</button>
         </div>
 
@@ -43,12 +41,12 @@
                 <div class="card">
                     <div class="card-body">
                         <nav class="nav nav-pills mb-4">
-                            <button type="button" class="btn btn-danger" (click)="onChangeTab('help')">Need help
-                                ({{needHelpEmployees.length || 0}})</button>
-                            <button class="nav-link" (click)="onChangeTab('safe')">Marked as save
-                                ({{markedSafeEmployees.length || 0}}) </button>
-                            <button class="nav-link" (click)="onChangeTab('noResponse')">No response
+                            <button  [ngClass]="[activeTab == 'noResponse'?'btn btn-danger':'nav-link']" (click)="onChangeTab('noResponse')">No response
                                 ({{noResponseEmployees.length || 0}})</button>
+                            <button type="button" [ngClass]="[activeTab == 'help'?'btn btn-danger':'nav-link']" (click)="onChangeTab('help')">Need help
+                                ({{needHelpEmployees.length || 0}})</button>
+                            <button [ngClass]="[activeTab == 'safe'?'btn btn-danger':'nav-link']" (click)="onChangeTab('safe')">Marked as save
+                                ({{markedSafeEmployees.length || 0}}) </button>
                         </nav>
 
                         <table class="table table-bordered">
@@ -58,6 +56,8 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Phone</th>
                                     <th scope="col">Location</th>
+                                    <th scope="col">Emergency contact</th>
+                                    <th scope="col">Emergency contact number</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,6 +66,8 @@
                                     <td>{{ entry?.name }}</td>
                                     <td>{{ entry?.mobile_number }}</td>
                                     <td>{{ entry?.location?.long }}{{entry?.location&&','}} {{entry.location?.lat}}</td>
+                                    <td>{{ entry?.emergency_contact }}</td>
+                                    <td>{{ entry?.emergency_contact_mobile_number }}</td>
                                 </tr>
                             </tbody>
                         </table>
