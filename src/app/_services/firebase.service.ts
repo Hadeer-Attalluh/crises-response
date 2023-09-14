@@ -1,15 +1,19 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, push, set } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref,get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, mergeMap, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
 // import { Twilio } from 'twilio';
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
+  appVerifier: any;
+  confirmationResult: any;
 
   readonly dbLink = 'https://crises-response-b46d0-default-rtdb.europe-west1.firebasedatabase.app/';
 
@@ -45,12 +49,47 @@ export class FirebaseService {
 
   }
 
-  authinticateUser() {
-
+  async authinticateUser(phoneNumber: string) {
+    if (!this.appVerifier) this.recaptcha();
+    try {
+      this.confirmationResult = await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier);
+      return this.confirmationResult;
+    } catch (error) {
+      throw (error);
+    }
   }
+
+  
+  recaptcha() {
+    this.appVerifier = new RecaptchaVerifier(this.fireAuth, 'sign-in-button', {
+      size: 'invisible',
+      callback: ((response: any) => {
+        console.log('capresponse', response);
+      }),
+      'expired-callback': () => { },
+      'error-callback': ((e: any) => {
+        console.log("Error occurred", e);
+      })
+    });
+  }
+
+  async verifyOtp(otp: string) {
+    if (!this.appVerifier) {
+      this.recaptcha();
+    }
+    try {
+      return this.confirmationResult.confirm(otp);
+    } catch (error) {
+
+    };
+  }
+
   saveLocation(crisisId,userId: any, longitude: number, latitude: number) {
     this.http.patch(this.dbLink+`crises/${crisisId}/users/${userId}/location.json`,{long:longitude,lat:latitude}).subscribe();
   }
+
+
+
   // TODO: a usage ?
   requestNotificationPermission() {
     const messaging = getMessaging();

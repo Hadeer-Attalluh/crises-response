@@ -8,7 +8,8 @@ import { SafetyCheckComponent } from './safety-check/safety-check.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule,FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 
 import { OtpComponent } from './otp/otp.component';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
@@ -20,7 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     LoginComponent,
     SafetyCheckComponent,
     UserProfileComponent,
-
+    VerifyByMobileComponent,
     OtpComponent,
     AppLayoutComponent,
   ],
@@ -36,4 +37,4 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
+import { FirebaseService } from '../_services/firebase.service';
 // import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -29,6 +30,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    private FBAuth:FirebaseService
     // private translate: TranslateService
   ) {
     this.processingRequest = false;

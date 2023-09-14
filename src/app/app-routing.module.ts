@@ -4,10 +4,16 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { SafetyCheckComponent } from './safety-check/safety-check.component';
+import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
 import { AppLayoutComponent } from './app-layout/app-layout.component';
 import { OtpComponent } from './otp/otp.component';
 
 const routes: Routes = [
+  {
+    path: 'verifyByMobile',
+    component: VerifyByMobileComponent,
+    // canActivate: [AuthGuard]
+  },
   {
     path: 'login',
     component: LoginComponent,
