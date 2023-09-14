@@ -1,11 +1,60 @@
-<div >
-    <div class="optHead">
-        <p>'AUTH.PHONENUMBER'</p>
-        <input type="text" [placeholder]="'AUTH.PHONENUMBER' " [formControl]="phoneNumber" />
-    </div>
-    <button color="primary" expand="block" class="btn btn-success btn-lg btn-block" (click)="sendOtp()">
-        {{ 'send otp' }}
-    </button>
-    <div id="sign-in-button"></div>
+<section class="section" *ngIf="!showOtp">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <img src="../assets/images/logo.svg" alt=" " width="120" class="mb-5">
 
-</div>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="p-4 shadow rounded content">
+                <h2 class="section-title">Enter your Phone</h2>
+                <form [formGroup]="verifyPhoneForm">
+                    <div class="form-group mb-3">
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Your Phone"
+                            formControlName="phoneNumber" required>
+                    </div>
+                    <div class="error-message" *ngIf="msgError
+                       
+                    ">{{msgError}}</div>
+                </form>
+                <button expand="block" type="submit" class="btn btn-primary mt-3" [disabled]="verifyPhoneForm.invalid"
+                    (click)="sendOtp()">
+                    {{ 'send otp' }}
+                </button>
+            </div>
+            <div id="sign-in-button"></div>
+
+        </div>
+    </div>
+</section>
+<section *ngIf="showOtp">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <img src="../assets/images/logo.svg" alt=" " width="120" class="mb-5">
+
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="p-5 shadow rounded content">
+                    <h2 class="section-title">OTP</h2>
+                    <form [formGroup]="otpForm">
+
+                        <p>Message has Been Sent toypur phone </p>
+                        <div class="form-group mb-3">
+                            <label for="otp">Otp</label>
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="" required
+                                formControlName="otpCode">
+                        </div>
+                        <div class="error-message" *ngIf="msgError
+                           
+                        ">{{msgError}}</div>
+                        <button type="submit" class="btn btn-primary mt-3" (click)="verifyOtp()">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

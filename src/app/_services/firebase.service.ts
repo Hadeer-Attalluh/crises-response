@@ -1,11 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
-import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, push, set } from 'firebase/database';
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref,get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
 import { map, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
 // import { Twilio } from 'twilio';
 @Injectable({
   providedIn: 'root'
@@ -52,8 +53,8 @@ export class FirebaseService {
   async authinticateUser(phoneNumber: string) {
     if (!this.appVerifier) this.recaptcha();
     try {
-      return await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier)
-
+      this.confirmationResult = await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier);
+      return this.confirmationResult;
     } catch (error) {
       throw (error);
     }
@@ -73,22 +74,17 @@ export class FirebaseService {
   }
 
   async verifyOtp(otp: string) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (!this.appVerifier) {
-          this.recaptcha();
-        }
-        const result = this.confirmationResult.confirm(otp).then((result: any) => {
-          // User signed in successfully.
-          const user = result.user;
-          // ...
-        });
-      } catch (e) {
-        // console.log("Verfy Err : ", e?.message);
-        reject(e);
-      }
-    });
+    if (!this.appVerifier) {
+      this.recaptcha();
+    }
+    try {
+      return this.confirmationResult.confirm(otp);
+    } catch (error) {
+
+    };
   }
+
+
 
   // TODO: a usage ?
   requestNotificationPermission() {
