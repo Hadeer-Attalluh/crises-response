@@ -59,6 +59,7 @@ export class FirebaseService {
     }
   }
 
+  
   recaptcha() {
     this.appVerifier = new RecaptchaVerifier(this.fireAuth, 'sign-in-button', {
       size: 'invisible',
@@ -91,6 +92,10 @@ export class FirebaseService {
       })
     );
   }
+  saveLocation(crisisId,userId: any, longitude: number, latitude: number) {
+    this.http.patch(this.dbLink+`crises/${crisisId}/users/${userId}/location.json`,{long:longitude,lat:latitude}).subscribe();
+  }
+
 
 
   // TODO: a usage ?
@@ -157,5 +162,12 @@ export class FirebaseService {
           headers: headers
         })
       })).subscribe();
+  }
+
+  saveEmployeeCrisisResponse(user: any) {
+   return this.http.patch(this.dbLink+`crises/${user.crisisId}/users/${user.db_idx}.json`,{
+    is_safe:user.is_safe,
+    support_requests:user.support_requests
+   });
   }
 }
