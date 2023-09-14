@@ -1,15 +1,15 @@
-<section class="section">
+<section class="section" *ngIf="currentStep == steps.RESPONSE">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <h2 class="mb-5 font-weight-medium">Welcome Sara</h2>
+        <h2 class="mb-5 font-weight-medium" *ngIf="user?.name">Welcome {{user?.name}}</h2>
         <div class="p-5 shadow rounded">
           <div class="d-flex justify-content-center">
             <div class="text-center m-5">
-              <button class="bg-transparent border-0">
+              <button class="bg-transparent border-0" (click)="needHelpReponse(true)">
                 <img
                   class=""
-                  src="../assets/images/682044.png"
+                  src="../assets/images/682044.png" alt=""
                   width="100"
                   height="100"
                 />
@@ -17,9 +17,9 @@
               </button>
             </div>
             <div class="text-center m-5">
-              <button class="bg-transparent border-0">
+              <button class="bg-transparent border-0" (click)="needHelpReponse(false)">
                 <img
-                  src="../assets/images/1067447.png"
+                  src="../assets/images/1067447.png" alt=""
                   width="100"
                   height="100"
                 />
@@ -33,26 +33,27 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section" *ngIf="currentStep === steps.REQUEST_HELP">
   <div class="container">
+
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="p-5 shadow rounded content">
           <h2 class="section-title">Need Help</h2>
           <form action="/user-profile">
-            <p>Please provide us with more details</p>
+            <p>Please provide us with more details </p>
             <div class="form-group mb-3">
               <label for="">Details (optional)</label>
-              <textarea class="form-control" name="" id="" rows="3"></textarea>
+              <textarea [(ngModel)]="helpDescription" name="helpDescription" [ngModelOptions]="{standalone:true}" class="form-control" name="" id="" rows="3"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Send</button>
+            <button type="submit" class="btn btn-primary mt-3" (click)="submitEmployeeCrisisResponse()">Send</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 </section>
-<section class="section">
+<section class="section" *ngIf="currentStep === steps.RESPONSE_DONE || user?.is_safe ==true">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">

@@ -1,15 +1,20 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, push, set } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref,get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, mergeMap, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
 // import { Twilio } from 'twilio';
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
+  appVerifier: any;
+  confirmationResult: any;
+
   readonly dbLink = 'https://crises-response-b46d0-default-rtdb.europe-west1.firebasedatabase.app/';
 
   readonly FCMKeyPair = 'BMdPrqiZz9W2WJ5faeLGEtBqDkGT6RjOooOZdMU_u5DKB9DR5k1FBeIgJ4nOvXsCGB4Ol9zfb0N6At5V3mvjlZ4';
@@ -44,9 +49,54 @@ export class FirebaseService {
 
   }
 
-  authinticateUser() {
-
+  async authinticateUser(phoneNumber: string) {
+    if (!this.appVerifier) this.recaptcha();
+    try {
+      this.confirmationResult = await signInWithPhoneNumber(this.fireAuth, phoneNumber, this.appVerifier);
+      return this.confirmationResult;
+    } catch (error) {
+      throw (error);
+    }
   }
+
+  
+  recaptcha() {
+    this.appVerifier = new RecaptchaVerifier(this.fireAuth, 'sign-in-button', {
+      size: 'invisible',
+      callback: ((response: any) => {
+        console.log('capresponse', response);
+      }),
+      'expired-callback': () => { },
+      'error-callback': ((e: any) => {
+        console.log("Error occurred", e);
+      })
+    });
+  }
+
+  async verifyOtp(otp: string) {
+    if (!this.appVerifier) {
+      this.recaptcha();
+    }
+    try {
+      return this.confirmationResult.confirm(otp);
+    } catch (error) {
+
+    };
+  }
+
+  //sign in 
+  signInWithEmail(){
+   return this.http.get(this.dbLink + 'admins.json').pipe(
+      map(data => {
+        return data;
+      })
+    );
+  }
+  saveLocation(crisisId,userId: any, longitude: number, latitude: number) {
+    this.http.patch(this.dbLink+`crises/${crisisId}/users/${userId}/location.json`,{long:longitude,lat:latitude}).subscribe();
+  }
+
+
 
   // TODO: a usage ?
   requestNotificationPermission() {
@@ -78,7 +128,7 @@ export class FirebaseService {
   getCrises() {
     return this.http.get(this.dbLink + 'crises.json').pipe(
       map(data => {
-        console.log(data);
+        // console.log(data);
         return data;
       })
     );
@@ -112,5 +162,12 @@ export class FirebaseService {
           headers: headers
         })
       })).subscribe();
+  }
+
+  saveEmployeeCrisisResponse(user: any) {
+   return this.http.patch(this.dbLink+`crises/${user.crisisId}/users/${user.db_idx}.json`,{
+    is_safe:user.is_safe,
+    support_requests:user.support_requests
+   });
   }
 }
