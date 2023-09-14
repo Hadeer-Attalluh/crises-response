@@ -7,8 +7,13 @@ import { LoginComponent } from './login/login.component';
 import { SafetyCheckComponent } from './safety-check/safety-check.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
+
+import { OtpComponent } from './otp/otp.component';
+import { AppLayoutComponent } from './app-layout/app-layout.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -16,16 +21,19 @@ import { VerifyByMobileComponent } from './verify-by-mobile/verify-by-mobile';
     LoginComponent,
     SafetyCheckComponent,
     UserProfileComponent,
-    VerifyByMobileComponent
+    VerifyByMobileComponent,
+    OtpComponent,
+    AppLayoutComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CommonModule,
     ReactiveFormsModule,
-
+    HttpClientModule,
+    NgbModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
