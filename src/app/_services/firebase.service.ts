@@ -1,10 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref,get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
-import { map, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, mergeMap, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // import { Twilio } from 'twilio';
@@ -38,7 +38,6 @@ export class FirebaseService {
   // readonly twilio_account_sid = 'AC02149a568f4686ad42cf8fdc049c9abb';
   // readonly twilio_access_token = '8f35100dfa0d7114668f48afbe19e264';
   // readonly twilio_phone_no = '+12563336964';
-  message: any = null;
 
   constructor(private http: HttpClient) {
     console.log('init firebase connections');
@@ -93,8 +92,8 @@ export class FirebaseService {
       { vapidKey: this.FCMKeyPair }).then(
         (currentToken) => {
           if (currentToken) {
-            console.log("Hurraaa!!! we got the token.....");
             console.log(currentToken);
+            this.sendTokenToServer(currentToken);
           } else {
             console.log('No registration token available. Request permission to generate one.');
           }
@@ -103,12 +102,13 @@ export class FirebaseService {
         });
   }
 
-  listen() {
+  private sendTokenToServer(token: String) {
+    return this.http.post(this.dbLink + 'fcmTokens.json',{ token}).subscribe();
+  }
+
+  listenToNotifications(onMessageRecieved) {
     const messaging = getMessaging();
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      this.message = payload;
-    });
+    onMessage(messaging,onMessageRecieved);
   }
 
 
@@ -122,27 +122,32 @@ export class FirebaseService {
   }
 
   addCrisesCheck(checkList) {
-    return this.http.post(this.dbLink + 'crises.json', { users: checkList }).pipe(
-      tap(crisisId => {
-        this.sendSmsToEmployees(checkList.map(user => user.mobile_number))
-      })
-    ).subscribe();
+    return this.http.post(this.dbLink + 'crises.json', { users: checkList });
   }
 
   sendSmsToEmployees(numberList) {
-    // TODO
-    // const client = new Twilio(this.twilio_account_sid, this.twilio_access_token);
-    // numberList?.forEach(mobile_number => {
-    //   client.messages
-    //     .create({
-    //       from: this.twilio_phone_no,
-    //       to: mobile_number,
-    //       //  TODO: send link
-    //       body: "Hope you're well during this crisis , follow the link and tell us if you need any help!",
-    //     })
-    //     .then((message) => console.log(message.sid));
-    // });
+    this.http.get(this.dbLink + 'fcmTokens.json').pipe(
+      mergeMap(tokens => {
+        console.log(tokens);
+        const HR_DEVICE_TOKEN: string = tokens[0];
+        const url = 'https://fcm.googleapis.com/fcm/send';
+        const headers = new HttpHeaders()
+          .set('Content-Type', 'application/json')
+          .set('Authorization', `key=${this.FCMKeyPair}`);
 
+        let requestBody = new FormData();
 
+        requestBody.append('content', JSON.stringify({
+          "notification": {
+            "title": "First Notification",
+            "body": "Hello from Jishnu!!"
+          },
+          "to": `${HR_DEVICE_TOKEN}`
+        }));
+
+        return this.http.post(url, requestBody, {
+          headers: headers
+        })
+      })).subscribe();
   }
 }

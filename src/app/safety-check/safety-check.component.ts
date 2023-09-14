@@ -9,16 +9,46 @@ import { CrisesResponseService } from '../_services/crises-response.service';
   styleUrls: ['./safety-check.component.css']
 })
 export class SafetyCheckComponent implements OnInit {
-  
   data: any[];
-  constructor(private firebase: FirebaseService,private crisesReponseService:CrisesResponseService) { }
+  tableData: any[];
+  constructor(private firebase: FirebaseService, private crisesReponseService: CrisesResponseService) { }
 
+  get needHelpEmployees(): Employee[] {
+    return this.data?.filter(employee => employee.is_safe === false) || [];
+  }
+  get markedSafeEmployees(): Employee[] {
+    return this.data?.filter(employee => employee.is_safe === true) || [];
+  }
+  get noResponseEmployees(): Employee[] {
+    return this.data?.filter(employee => employee.is_safe === null || employee.is_safe === undefined) || [];
+  }
   ngOnInit(): void {
-    this.crisesReponseService.getLatestCrisesCheckListEmployees().subscribe(
-      ({employeeCheckList}) =>this.data=employeeCheckList
+    this.getCrisisEmployeeCheckList();
+    this.requestPushNotification();
+    this.firebase.listenToNotifications(
+      (payload) => {
+        console.log('Message received. ', payload);
+        console.log('Notification Type ', payload.data && payload.data['google.c.a.c_l']);
+        const notificationType = payload.data && payload.data['google.c.a.c_l'];
+        if (notificationType == 'response') {
+          this.getCrisisEmployeeCheckList();
+        }
+      }
     );
+  }
 
-    // this.firebase.requestNotificationPermission();
+  onChangeTab(activeTab) {
+    switch (activeTab) {
+      case 'help':
+        this.tableData = this.needHelpEmployees;
+        break;
+      case 'noResponse':
+        this.tableData = this.noResponseEmployees;
+        break;
+      case 'safe':
+        this.tableData = this.markedSafeEmployees;;
+        break;
+    }
   }
 
   onFileUpload(event: any) {
@@ -33,24 +63,34 @@ export class SafetyCheckComponent implements OnInit {
       const data = xlsx.utils.sheet_to_json(employeeSheet, { raw: true });
 
       this.data = data.map(employee => new Employee(employee));
-      this.postDataToFirebase();
+      this.uploadNewCrisisCheck();
 
     };
   }
 
-  requestPushNotification()
-  {
-    this.firebase.requestNotificationPermission();
-    
+  sendSmsToEmployees() {
+    const numberList = this.data.map(user => user.mobile_number);
+    alert('send sms is coming soon!');
   }
-  postDataToFirebase() {
+
+  private uploadNewCrisisCheck() {
     console.log(this.data);
-
-    this.firebase.addCrisesCheck(this.data)//.subscribe((success) => console.log(success)
+    this.firebase.addCrisesCheck(this.data)
+      .subscribe(crisisId => {
+        this.sendSmsToEmployees();
+      }
+      );
   }
 
-  // postUserToCrises()
-  // {
+  private requestPushNotification() {
+    this.firebase.requestNotificationPermission();
+  }
 
-  // }
+  private getCrisisEmployeeCheckList() {
+    this.crisesReponseService.getLatestCrisis().subscribe(
+      ({ employeeCheckList }) => {
+        this.data = employeeCheckList;
+      }
+    );
+  }
 }
