@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { elementAt, map } from 'rxjs';
+import { map } from 'rxjs';
 import { USER_ROLE } from '../_models/user-role.enum';
 import { AuthService } from '../_services/auth.service';
 import { FirebaseService } from '../_services/firebase.service';
-// import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -31,9 +30,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
     private FBAuth: FirebaseService
-    // private translate: TranslateService
   ) {
     this.processingRequest = false;
     this.initLoginForm();
@@ -41,8 +38,7 @@ export class LoginComponent implements OnInit {
 
       this.router.navigateByUrl('safety-check');
     }
-    else if(this.authService.currentUser?.role == USER_ROLE.USER)
-    {
+    else if (this.authService.currentUser?.role == USER_ROLE.USER) {
       this.router.navigateByUrl('user-profile');
 
     }
@@ -67,7 +63,7 @@ export class LoginComponent implements OnInit {
         });
         if (userEXist > -1) {
           const user = usersCredentials[userEXist];
-          localStorage.setItem('currentUser', JSON.stringify({ token: user.email, role: USER_ROLE.ADMIN ,username:user.email}));
+          localStorage.setItem('currentUser', JSON.stringify({ token: user.email, role: USER_ROLE.ADMIN, username: user.email }));
           this.router.navigateByUrl('safety-check');
         }
       }
@@ -114,7 +110,6 @@ export class LoginComponent implements OnInit {
     });
   }
   private emailValidationRegex() {
-    // tslint:disable-next-line:max-line-length
     return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   }
   private passwordCharactersValidator(
