@@ -50,7 +50,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         | boolean
         | UrlTree {
            
-        console.log(this.userRole,route);
         if (!this.isUserAuthenticated()) {
             return this.router.createUrlTree([`${route.data['redirectionPath']}`]);
         }

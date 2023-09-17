@@ -39,11 +39,11 @@ export class LoginComponent implements OnInit {
     this.initLoginForm();
     if (this.authService.currentUser?.role == USER_ROLE.ADMIN) {
 
-      this.router.navigateByUrl('/safety-check');
+      this.router.navigateByUrl('safety-check');
     }
     else if(this.authService.currentUser?.role == USER_ROLE.USER)
     {
-      this.router.navigateByUrl('/user-profile');
+      this.router.navigateByUrl('user-profile');
 
     }
   }
@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
         if (userEXist > -1) {
           const user = usersCredentials[userEXist];
           localStorage.setItem('currentUser', JSON.stringify({ token: user.email, role: USER_ROLE.ADMIN ,username:user.email}));
-          this.router.navigate(['/safety-check'] );
+          this.router.navigateByUrl('safety-check');
         }
       }
     );
