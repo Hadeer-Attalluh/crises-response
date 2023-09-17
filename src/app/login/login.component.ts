@@ -65,6 +65,8 @@ export class LoginComponent implements OnInit {
           const user = usersCredentials[userEXist];
           localStorage.setItem('currentUser', JSON.stringify({ token: user.email, role: USER_ROLE.ADMIN, username: user.email }));
           this.router.navigateByUrl('safety-check');
+        } else {
+          this.errorMessage = 'email or password incorrect'
         }
       }
     );
