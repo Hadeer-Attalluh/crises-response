@@ -15,14 +15,14 @@ export class UserProfileComponent implements OnInit {
     RESPONSE: 1,
     REQUEST_HELP: 2,
     RESPONSE_DONE: 3,
-    NO_CHECK:4
+    NO_CHECK: 4
 
   }
   currentStep;
 
   helpDescription: string = '';
-  emergencyContact:string;
-emergencyContactNumber:string;
+  emergencyContact: string;
+  emergencyContactNumber: string;
   constructor(private crisesService: CrisesResponseService,
     private activatedRoute: ActivatedRoute) {
   }
@@ -35,14 +35,13 @@ emergencyContactNumber:string;
       .subscribe(result => {
         this.user = result;
         console.log(this.user);
-if(this.user.id)
-{
-  this.currentStep = this.steps.RESPONSE;
-  this.crisesService.getUserLocation(this.user?.crisisId, this.user?.db_idx)
-}
-else{
-  this.currentStep = this.steps.NO_CHECK;
-}
+        if (this.user.id) {
+          this.currentStep = this.steps.RESPONSE;
+          this.crisesService.getUserLocation(this.user?.crisisId, this.user?.db_idx)
+        }
+        else {
+          this.currentStep = this.steps.NO_CHECK;
+        }
       });
   }
 

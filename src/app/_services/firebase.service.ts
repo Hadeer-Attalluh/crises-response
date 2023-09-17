@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, mergeMap, tap } from 'rxjs';
+import { iif, map, mergeMap, of, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // import { Twilio } from 'twilio';
@@ -117,7 +117,16 @@ export class FirebaseService {
   }
 
   private sendTokenToServer(token: String) {
-    return this.http.post(this.dbLink + 'fcmTokens/admin-token.json',  token ).subscribe();
+    this.http.get(this.dbLink + 'fcmTokens/admin-token.json')
+      .pipe(
+        mergeMap(
+          result =>
+            iif(
+              () => (result == null), this.http.post(this.dbLink + 'fcmTokens/admin-token.json', token), of(token)
+            )
+        )
+      )
+      .subscribe()
   }
 
   listenToNotifications(onMessageRecieved) {
@@ -130,8 +139,7 @@ export class FirebaseService {
     return this.http.get(this.dbLink + 'crises.json').pipe(
       map(data => {
         // console.log(data);
-        if(data == null || data ==undefined)
-        {
+        if (data == null || data == undefined) {
           return {};
         }
         return data;
