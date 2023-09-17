@@ -68,7 +68,7 @@ export class VerifyByMobileComponent implements OnInit {
     this.FBAuth.verifyOtp(mobileCode).then((res) => {
       if (res.user) {
         localStorage.setItem('currentUser', JSON.stringify({ token: res.user.accessToken, role:USER_ROLE.USER ,username:mobileNumber}));
-        this.router.navigate(['/user-profile'],{queryParams: {'mobile':encodeURI(mobileNumber)} });
+        this.router.navigate(['/user-profile']);
       }
     }).catch((error) => {
       this.msgError ='an error occurred please try again later';

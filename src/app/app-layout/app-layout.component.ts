@@ -17,7 +17,6 @@ export class AppLayoutComponent implements OnInit {
     }
     else if (this.authService.currentUser?.role == USER_ROLE.USER) {
       this.router.navigateByUrl('user-profile');
-
     }
   }
 

@@ -3,6 +3,7 @@ import { CrisesResponseService } from '../_services/crises-response.service';
 import { ActivatedRoute } from '@angular/router';
 import { mergeMap } from 'rxjs';
 import { Employee } from '../_models/employee.model';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -24,13 +25,24 @@ export class UserProfileComponent implements OnInit {
   emergencyContact: string;
   emergencyContactNumber: string;
   constructor(private crisesService: CrisesResponseService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.pipe(
       mergeMap((params) => {
-        return this.crisesService.getUserInfo(params.get('mobile'))
+        let mobileNumber = decodeURI(params.get('mobile') || '');
+
+        if (mobileNumber && mobileNumber != '') {
+          return this.crisesService.getUserInfo(mobileNumber);
+        }
+        else {
+          mobileNumber = this.authService.currentUser.username;
+          return this.crisesService.getUserInfo(mobileNumber);
+        }
+        console.log(mobileNumber);
+
       }))
       .subscribe(result => {
         this.user = result;
