@@ -20,8 +20,18 @@ export class VerifyByMobileComponent implements OnInit {
   phoneNumber='';
   constructor(
     private FBAuth: FirebaseService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
+    if (this.authService.currentUser?.role == USER_ROLE.ADMIN) {
+
+      this.router.navigateByUrl('safety-check');
+    }
+    else if(this.authService.currentUser?.role == USER_ROLE.USER)
+    {
+      this.router.navigateByUrl('user-profile');
+
+    }
   }
 
   ngOnInit(): void {
