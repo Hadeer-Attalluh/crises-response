@@ -117,13 +117,16 @@ export class FirebaseService {
   }
 
   private sendTokenToServer(token: String) {
-    this.http.get(this.dbLink + 'fcmTokens/admin-token.json')
+    this.http.get(this.dbLink + 'fcmTokens.json?token=${token}')
       .pipe(
         mergeMap(
           result =>
-            iif(
-              () => (result == null), this.http.post(this.dbLink + 'fcmTokens.json', {"admin-token":token}), of(token)
+          {
+            console.log(result);
+            return iif(
+              () => (result == null), this.http.post(this.dbLink + 'fcmTokens.json', {token}), of(token)
             )
+          }
         )
       )
       .subscribe()
@@ -152,32 +155,32 @@ export class FirebaseService {
   }
 
   notifyOrganizationWithResponse() {
-    // this.http.get(this.dbLink + 'fcmTokens/admin-token.json').pipe(
-    //   mergeMap(({tokens}) => {
-    //     console.log(tokens);
-    //     const HR_DEVICE_TOKEN: string = tokens;
+    this.http.get(this.dbLink + 'fcmTokens/admin-token.json').pipe(
+      mergeMap((token) => {
+        console.log(token);
+        const HR_DEVICE_TOKEN: string = token.toString();
 
-    //     const url = 'https://fcmdata.googleapis.com/fcm/send';
-    //     const LEGACY_SERVER_KEY = "AAAA5R77Kt8:APA91bEEy1mb9oQWT1_-tjdbKoe6pRsinNFUzQAtRAUALKVQPmmevLTRYLaqnTciQi8jpEtEaIOHUF7b4OvY0TEVjUfBBTOGlI4VSLpH_1MyWItZ7eg1hH87Y805PIBhzl2xzdzyZIu-"
-    //     const headers = new HttpHeaders()
-    //       .set('Content-Type', 'application/json')
-    //       .set('Authorization', `key=${LEGACY_SERVER_KEY}`);
+        const url = 'https://fcmdata.googleapis.com/fcm/send';
+        const LEGACY_SERVER_KEY = "AAAA5R77Kt8:APA91bEEy1mb9oQWT1_-tjdbKoe6pRsinNFUzQAtRAUALKVQPmmevLTRYLaqnTciQi8jpEtEaIOHUF7b4OvY0TEVjUfBBTOGlI4VSLpH_1MyWItZ7eg1hH87Y805PIBhzl2xzdzyZIu-"
+        const headers = new HttpHeaders()
+          .set('Content-Type', 'application/json')
+          .set('Authorization', `key=${LEGACY_SERVER_KEY}`);
 
-    //     let requestBody = new FormData();
+        let requestBody = new FormData();
 
-    //     requestBody.append('content', JSON.stringify({
-    //       "notification": {
-    //         "title": "First Notification",
-    //         "body": "Hello from Jishnu!!",
-    //         "name": "response"
-    //       },
-    //       "to": `${HR_DEVICE_TOKEN}`
-    //     }));
+        requestBody.append('content', JSON.stringify({
+          "notification": {
+            "title": "First Notification",
+            "body": "Hello from Jishnu!!",
+            "name": "response"
+          },
+          "to": `${HR_DEVICE_TOKEN}`
+        }));
 
-    //     return this.http.post(url, requestBody, {
-    //       headers: headers
-    //     })
-    //   })).subscribe();
+        return this.http.post(url, requestBody, {
+          headers: headers
+        })
+      })).subscribe();
   }
 
   saveEmployeeCrisisResponse(user: any) {
