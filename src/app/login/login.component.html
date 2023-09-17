@@ -103,6 +103,9 @@
 
                             </div>
                         </div>
+                        <div class="error-message" *ngIf="errorMessage">
+                            {{ errorMessage }}
+                        </div>
                     </form>
                     <button type="submit" class="btn btn-primary mt-3" (click)="login()">Login</button>
                 </div>
