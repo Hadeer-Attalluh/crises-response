@@ -122,7 +122,7 @@ export class FirebaseService {
         mergeMap(
           result =>
             iif(
-              () => (result == null), this.http.post(this.dbLink + 'fcmTokens/admin-token.json', token), of(token)
+              () => (result == null), this.http.post(this.dbLink + 'fcmTokens.json', {"admin-token":token}), of(token)
             )
         )
       )
