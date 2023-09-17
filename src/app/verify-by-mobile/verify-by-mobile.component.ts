@@ -8,8 +8,8 @@ import { FirebaseService } from '../_services/firebase.service';
 
 @Component({
   selector: 'app-verify-by-mobile',
-  templateUrl: './verify-by-mobile.html',
-  styleUrls: ['./verify-by-mobile.css']
+  templateUrl: './verify-by-mobile.component.html',
+  styleUrls: ['./verify-by-mobile.component.css']
 
 })
 export class VerifyByMobileComponent implements OnInit {
@@ -57,8 +57,8 @@ export class VerifyByMobileComponent implements OnInit {
     const mobileNumber= this.verifyPhoneForm.get('phoneNumber')?.value;
     this.FBAuth.verifyOtp(mobileCode).then((res) => {
       if (res.user) {
-        this.router.navigate(['/user-profile'],{queryParams: {'phoneNumber':mobileNumber} });
-        localStorage.setItem('currentUser', JSON.stringify({ token: res.user.accessToken, role:USER_ROLE.USER }));
+        localStorage.setItem('currentUser', JSON.stringify({ token: res.user.accessToken, role:USER_ROLE.USER ,username:mobileNumber}));
+        this.router.navigate(['/user-profile'],{queryParams: {'mobile':encodeURI(mobileNumber)} });
       }
     }).catch((error) => {
       this.msgError ='an error occurred please try again later';

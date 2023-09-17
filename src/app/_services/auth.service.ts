@@ -5,11 +5,18 @@ import { of } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  isLoggedIn: any;
   login(value: any) {
     return of(true);
   }
-  currentUser: any;
-
+  
   constructor() { }
+
+  get currentUser(): any{
+    return JSON.parse(localStorage.getItem('currentUser')||'{}');
+  }
+
+  get isLoggedIn(): any
+  {
+    return this.currentUser?.username;
+  }
 }

@@ -27,11 +27,12 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.pipe(
       mergeMap((params) => {
-        return this.crisesService.getuserInfo(params.get('mobile'))}))
+        return this.crisesService.getuserInfo(params.get('mobile'))
+      }))
       .subscribe(result => {
         this.user = result;
         console.log(this.user);
-        
+
         this.crisesService.getUserLocation(this.user?.crisisId, this.user?.db_idx)
       });
   }
@@ -46,9 +47,9 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
- submitEmployeeCrisisResponse() {
+  submitEmployeeCrisisResponse() {
     this.user.support_requests = this.helpDescription;
-    this.crisesService.submitEmployeeCrisisResponse(this.user).subscribe(result=>{
+    this.crisesService.submitEmployeeCrisisResponse(this.user).subscribe(result => {
       this.currentStep = this.steps.RESPONSE_DONE;
     })
   }

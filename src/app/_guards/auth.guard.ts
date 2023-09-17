@@ -20,8 +20,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         private authService: AuthService,
         private router: Router
     ) {}
-    get userRoles() {
-        return this.authService.currentUser?.roles;
+    get userRole():USER_ROLE {
+        return this.authService.currentUser?.role;
     }
 
     canActivateChild(
@@ -32,8 +32,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         | UrlTree
         | Observable<boolean | UrlTree>
         | Promise<boolean | UrlTree> {
-        if (!this.isUserAuthorized(childRoute.data['roles'])) {
-            return this.router.createUrlTree(['']);
+            console.log(this.userRole,childRoute.data['role']);
+            
+        if (this.userRole != childRoute.data['role']) {
+            return false;
         } else {
             return true;
         }
@@ -47,11 +49,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
+           
+        console.log(this.userRole,route);
         if (!this.isUserAuthenticated()) {
-            return this.router.createUrlTree(['/login']);
+            return this.router.createUrlTree([`${route.data['redirectionPath']}`]);
         }
-        if (!this.isUserAuthorized(route.data['roles'])) {
-            return this.router.createUrlTree(['user-profile']);
+        if (!(this.userRole == route.data.role)) {
+            return false;
         } else {
             return true;
         }
@@ -61,36 +65,4 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         return this.authService.isLoggedIn;
     }
 
-    private isUserAuthorized(
-        authorizedUserRoles: USER_ROLE[],
-        matchAllRoles?: boolean
-    ) {
-        if (!authorizedUserRoles) return true;
-        if (matchAllRoles) {
-            return this.matchAllRoles(authorizedUserRoles);
-        }
-        return this.matchSomeRoles(authorizedUserRoles);
-    }
-
-    private matchAllRoles(roles: USER_ROLE[]) {
-        let roleMatching = true;
-        for (let role of roles) {
-            roleMatching = roleMatching && this.userRoles.includes(role);
-            if (!roleMatching) {
-                return roleMatching;
-            }
-        }
-        return roleMatching;
-    }
-
-    private matchSomeRoles(roles:USER_ROLE[]) {
-        let roleMatching = false;
-        for (const role of roles) {
-            roleMatching = roleMatching || this.userRoles.includes(role);
-            if (roleMatching) {
-                return roleMatching;
-            }
-        }
-        return roleMatching;
-    }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref,get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
+import { getDatabase, ref, get, onChildAdded, onChildChanged, onChildRemoved, push, set, onValue, child } from 'firebase/database';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, mergeMap, tap } from 'rxjs';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
@@ -59,7 +59,7 @@ export class FirebaseService {
     }
   }
 
-  
+
   recaptcha() {
     this.appVerifier = new RecaptchaVerifier(this.fireAuth, 'sign-in-button', {
       size: 'invisible',
@@ -85,15 +85,16 @@ export class FirebaseService {
   }
 
   //sign in 
-  signInWithEmail(){
-   return this.http.get(this.dbLink + 'admins.json').pipe(
+  signInWithEmail() {
+    return this.http.get(this.dbLink + 'admins.json').pipe(
       map(data => {
         return data;
       })
     );
   }
-  saveLocation(crisisId,userId: any, longitude: number, latitude: number) {
-    this.http.patch(this.dbLink+`crises/${crisisId}/users/${userId}/location.json`,{long:longitude,lat:latitude}).subscribe();
+  saveLocation(crisisId, userId: any, longitude: number, latitude: number) {
+
+    this.http.patch(this.dbLink + `crises/${crisisId}/users/${userId}/location.json`, { long: longitude, lat: latitude }).subscribe();
   }
 
 
@@ -116,12 +117,12 @@ export class FirebaseService {
   }
 
   private sendTokenToServer(token: String) {
-    return this.http.post(this.dbLink + 'fcmTokens.json',{ token}).subscribe();
+    return this.http.post(this.dbLink + 'fcmTokens/admin-token.json',  token ).subscribe();
   }
 
   listenToNotifications(onMessageRecieved) {
     const messaging = getMessaging();
-    onMessage(messaging,onMessageRecieved);
+    onMessage(messaging, onMessageRecieved);
   }
 
 
@@ -138,36 +139,43 @@ export class FirebaseService {
     return this.http.post(this.dbLink + 'crises.json', { users: checkList });
   }
 
-  sendSmsToEmployees(numberList) {
-    this.http.get(this.dbLink + 'fcmTokens.json').pipe(
-      mergeMap(tokens => {
-        console.log(tokens);
-        const HR_DEVICE_TOKEN: string = tokens[0];
-        const url = 'https://fcm.googleapis.com/fcm/send';
-        const headers = new HttpHeaders()
-          .set('Content-Type', 'application/json')
-          .set('Authorization', `key=${this.FCMKeyPair}`);
+  notifyOrganizationWithResponse() {
+    // this.http.get(this.dbLink + 'fcmTokens/admin-token.json').pipe(
+    //   mergeMap(({tokens}) => {
+    //     console.log(tokens);
+    //     const HR_DEVICE_TOKEN: string = tokens;
 
-        let requestBody = new FormData();
+    //     const url = 'https://fcmdata.googleapis.com/fcm/send';
+    //     const LEGACY_SERVER_KEY = "AAAA5R77Kt8:APA91bEEy1mb9oQWT1_-tjdbKoe6pRsinNFUzQAtRAUALKVQPmmevLTRYLaqnTciQi8jpEtEaIOHUF7b4OvY0TEVjUfBBTOGlI4VSLpH_1MyWItZ7eg1hH87Y805PIBhzl2xzdzyZIu-"
+    //     const headers = new HttpHeaders()
+    //       .set('Content-Type', 'application/json')
+    //       .set('Authorization', `key=${LEGACY_SERVER_KEY}`);
 
-        requestBody.append('content', JSON.stringify({
-          "notification": {
-            "title": "First Notification",
-            "body": "Hello from Jishnu!!"
-          },
-          "to": `${HR_DEVICE_TOKEN}`
-        }));
+    //     let requestBody = new FormData();
 
-        return this.http.post(url, requestBody, {
-          headers: headers
-        })
-      })).subscribe();
+    //     requestBody.append('content', JSON.stringify({
+    //       "notification": {
+    //         "title": "First Notification",
+    //         "body": "Hello from Jishnu!!",
+    //         "name": "response"
+    //       },
+    //       "to": `${HR_DEVICE_TOKEN}`
+    //     }));
+
+    //     return this.http.post(url, requestBody, {
+    //       headers: headers
+    //     })
+    //   })).subscribe();
   }
 
   saveEmployeeCrisisResponse(user: any) {
-   return this.http.patch(this.dbLink+`crises/${user.crisisId}/users/${user.db_idx}.json`,{
-    is_safe:user.is_safe,
-    support_requests:user.support_requests
-   });
+
+    return this.http.patch(this.dbLink + `crises/${user.crisisId}/users/${user.db_idx}.json`, {
+      is_safe: user.is_safe,
+      support_requests: user.support_requests
+    }).pipe(tap((response) => {
+      this.notifyOrganizationWithResponse();
+      return response;
+    }));
   }
 }
