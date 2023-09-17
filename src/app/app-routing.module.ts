@@ -37,7 +37,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           role: USER_ROLE.USER,
-          redirectionPath: '/verifyByOtp'
+          redirectionPath: '/verifyByMobile'
         }
       }
     ],

@@ -56,11 +56,14 @@ export class CrisesResponseService {
     return this.firebaseService.saveEmployeeCrisisResponse(user);
   }
 
-  getLatestCrisis(): Observable<Crisis> {
+  getLatestCrisis(): Observable<Crisis | null> {
 
     return this.firebaseService.getCrises()
       .pipe(map(crises => {
         const criseskeys = Object.keys(crises);
+        if (criseskeys.length == 0) {
+          return null;
+        }
         return {
           id: criseskeys[criseskeys.length - 1],
           employeeCheckList: crises[criseskeys[criseskeys.length - 1]].users.map((employee, idx) => {
@@ -74,12 +77,21 @@ export class CrisesResponseService {
       ));
   }
 
-  getuserInfo(mobileNumber) {
+  getUserInfo(mobileNumber) {
     console.log(mobileNumber);
 
     return this.getLatestCrisis().pipe(map(
       crisis => {
-        return crisis.employeeCheckList.find(employee => employee.mobile_number == mobileNumber) || new Employee({});
+        if (crisis == null) {
+          console.log('no crises found');
+          return new Employee({});
+        }
+        else if (!crisis.employeeCheckList?.find(employee => employee.mobile_number == mobileNumber)) {
+          console.log('current user not checked in latest crisis');
+          return new Employee({});
+        }
+        else
+          return crisis.employeeCheckList.find(employee => employee.mobile_number == mobileNumber)||new Employee({});
       }
     ));
   }

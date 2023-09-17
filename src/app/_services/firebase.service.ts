@@ -130,6 +130,10 @@ export class FirebaseService {
     return this.http.get(this.dbLink + 'crises.json').pipe(
       map(data => {
         // console.log(data);
+        if(data == null || data ==undefined)
+        {
+          return {};
+        }
         return data;
       })
     );
@@ -172,7 +176,9 @@ export class FirebaseService {
 
     return this.http.patch(this.dbLink + `crises/${user.crisisId}/users/${user.db_idx}.json`, {
       is_safe: user.is_safe,
-      support_requests: user.support_requests
+      support_requests: user.support_requests,
+      emergency_contact: user.emergency_contact,
+      emergency_contact_mobile_number: user.emergency_contact_mobile_number
     }).pipe(tap((response) => {
       this.notifyOrganizationWithResponse();
       return response;

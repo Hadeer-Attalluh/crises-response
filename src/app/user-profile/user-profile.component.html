@@ -63,11 +63,13 @@
             </div>
             <div class="form-group mb-3">
               <label for="contact">Emergency Contact (optional)</label>
-              <input type="text" class="form-control" id="contact" />
+              <input type="text" class="form-control" id="contact"  [(ngModel)]="emergencyContact"
+              name="emergencyContact"/>
             </div>
             <div class="form-group mb-3">
               <label for="contact-number">Emergency Contact Number (optional)</label>
-              <input type="tel" class="form-control" id="contact-number" />
+              <input type="tel" class="form-control" id="contact-number" [(ngModel)]="emergencyContactNumber"
+              name="emergencyContactNumber" />
             </div>
             <button
               type="submit"
@@ -93,6 +95,23 @@
           <div>
             Your message was sent successfully Our hr representative will
             contact you shortly
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  class="section"
+  *ngIf="currentStep === steps.NO_CHECK"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="p-5 shadow rounded content">
+          <div>
+            We're glad that there's no crisis at the moment.
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ export class SafetyCheckComponent implements OnInit {
   data: any[] = [];
   tableData: any[];
   activeTab;
-  constructor(private firebase: FirebaseService, private crisesReponseService: CrisesResponseService) { 
+  constructor(private firebase: FirebaseService, private crisesReponseService: CrisesResponseService) {
     this.activeTab = 'noResponse';
   }
 
@@ -92,8 +92,14 @@ export class SafetyCheckComponent implements OnInit {
 
   private getCrisisEmployeeCheckList() {
     this.crisesReponseService.getLatestCrisis().subscribe(
-      ({ employeeCheckList }) => {
-        this.data = employeeCheckList;
+      (crisis) => {
+        if (!crisis?.employeeCheckList) {
+          console.log('no current crises');
+          this.data = [];
+        }
+        else {
+          this.data = crisis.employeeCheckList;
+        }
         this.onChangeTab(this.activeTab);
       }
     );

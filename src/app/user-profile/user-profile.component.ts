@@ -14,26 +14,35 @@ export class UserProfileComponent implements OnInit {
   readonly steps = {
     RESPONSE: 1,
     REQUEST_HELP: 2,
-    RESPONSE_DONE: 3
+    RESPONSE_DONE: 3,
+    NO_CHECK:4
+
   }
   currentStep;
 
   helpDescription: string = '';
+  emergencyContact:string;
+emergencyContactNumber:string;
   constructor(private crisesService: CrisesResponseService,
     private activatedRoute: ActivatedRoute) {
-    this.currentStep = this.steps.RESPONSE;
   }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.pipe(
       mergeMap((params) => {
-        return this.crisesService.getuserInfo(params.get('mobile'))
+        return this.crisesService.getUserInfo(params.get('mobile'))
       }))
       .subscribe(result => {
         this.user = result;
         console.log(this.user);
-
-        this.crisesService.getUserLocation(this.user?.crisisId, this.user?.db_idx)
+if(this.user.id)
+{
+  this.currentStep = this.steps.RESPONSE;
+  this.crisesService.getUserLocation(this.user?.crisisId, this.user?.db_idx)
+}
+else{
+  this.currentStep = this.steps.NO_CHECK;
+}
       });
   }
 
@@ -49,6 +58,9 @@ export class UserProfileComponent implements OnInit {
 
   submitEmployeeCrisisResponse() {
     this.user.support_requests = this.helpDescription;
+    this.user.emergency_contact = this.emergencyContact;
+    this.user.emergency_contact_mobile_number = this.emergencyContactNumber;
+
     this.crisesService.submitEmployeeCrisisResponse(this.user).subscribe(result => {
       this.currentStep = this.steps.RESPONSE_DONE;
     })
